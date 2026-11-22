@@ -4,6 +4,17 @@
 Draws a newspaper front page ("THE WORLD") with Pillow and writes it to
 entry.png (or to the path given as the first argument). Pure stdlib + Pillow,
 no network, fully deterministic: the same code always paints the same bytes.
+
+Layout, top to bottom on a 1024x1024 page:
+  * masthead — centred "THE WORLD" title, red dateline, double rule.
+  * lead story (STORIES[0]) — full-width headline + body on the left,
+    framed sketch on the right.
+  * four half-column stories (STORIES[1..4]) — two rows of two columns,
+    each with text on the left and a small sketch on the right, separated
+    by a vertical divider at the page centre.
+  * closing story (STORIES[5]) — one wide headline + body with a small
+    sketch at the right.
+  * ticker band — red strip at the bottom with two centred news lines.
 """
 
 import os
@@ -11,6 +22,10 @@ import sys
 
 from PIL import Image, ImageDraw, ImageFont
 
+# Page geometry: the sheet is square, 1024x1024 px. Content runs inside a
+# 30 px margin (text starts at x=30, rules end at x=994), and the two
+# half-columns split at the centre line x=512 (left column 30..500, right
+# column 524..994, with a 24 px gutter between them).
 PAGE = 1024
 INK = (18, 18, 18)
 PAPER = (255, 255, 255)
